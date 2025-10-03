@@ -132,3 +132,5 @@ def draw_groupBtn(screen, title, x, y, buttons, font,
 
     return btn_rects
 
+def drawInfor():
+    pass

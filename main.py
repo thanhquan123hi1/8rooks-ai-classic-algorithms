@@ -13,9 +13,9 @@ from CSP import *
 from ui import *
 
 N = 8
-SIZE = 40
-MARGIN = 155
-WIDTH, HEIGHT = 1250, 750   
+SIZE = 15
+MARGIN = 160
+WIDTH, HEIGHT = 1450, 750
 
 def main():
     pygame.init()
@@ -158,7 +158,7 @@ def main():
                     steps = current_step = current_algo = None
                     result_message, found, show_mes = "", False, 0
 
-                # Xem kết quả cuối
+                # button result
                 if btnResult.collidepoint(event.pos) and steps is not None:
                     last_state, last_path = current_step
                     found = False
@@ -204,8 +204,8 @@ def main():
 
         # ============ DRAW ============
         screen.fill((130, 148, 96))
-        draw_board(screen, SIZE, SIZE, mouse_pos, board=root)
-        draw_board(screen, N * SIZE + 2.5 * MARGIN, SIZE, mouse_pos, board=goal)
+        draw_board(screen, SIZE, SIZE + 30, mouse_pos, board=root)
+        draw_board(screen, N * SIZE + 2.5 * MARGIN, SIZE + 30, mouse_pos, board=goal)
         screen.blit(lblEmptyBoard, (SIZE + 150, 4))
         screen.blit(lbl8rooks, (N * SIZE + 2.5 * MARGIN + 150, 4))
 
