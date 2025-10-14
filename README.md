@@ -54,12 +54,11 @@ pip install pygame numpy
 
 ## Cách Chạy
 1. Cài đặt thư viện cần thiết.
-2. Đặt file hình ảnh (`w_rook.png`, `refresh.png`) vào thư mục `imgs/`.
-3. Chạy lệnh:
+2. Chạy lệnh:
    ```bash
    python main.py
    ```
-4. Giao diện hiển thị:
+3. Giao diện hiển thị:
    - Bàn cờ rỗng (trái) và trạng thái mục tiêu (phải).
    - Nút chọn thuật toán theo nhóm (Uninformed, Informed, Local, Nondeterministic, CSP).
    - Bảng thông tin hiển thị tên thuật toán, thời gian, số trạng thái và kết quả.
@@ -97,24 +96,9 @@ pip install pygame numpy
   - **Forward Checking**: Giảm miền giá trị sau mỗi bước gán.
 
 ## Minh Họa Thuật Toán (GIF)
-*(Bạn có thể chèn các file GIF minh họa quá trình hoạt động của từng thuật toán tại đây. Ví dụ: tạo GIF cho BFS, A*, Backtracking, v.v., và thêm liên kết hoặc nhúng vào phần này.)*
 
 ## Lưu Ý
 - Trạng thái mục tiêu được định nghĩa trong `main.py`.
 - `No_OBS` và `Part_OBS` in kết quả ra console, chưa tích hợp đầy đủ với GUI.
-- Ứng dụng yêu cầu file hình ảnh trong thư mục `imgs/`.
 - Hiệu suất phụ thuộc vào thuật toán; một số thuật toán (như Genetic Algorithm) có thể không luôn tìm được nghiệm.
 
-## Hạn Chế
-- `No_OBS` và `Part_OBS` chưa hỗ trợ hiển thị từng bước trên GUI.
-- Một số thuật toán cục bộ có thể không tìm được giải pháp do bản chất heuristic.
-- Ứng dụng giả định bàn cờ 8x8 và không hỗ trợ thay đổi kích thước.
-
-## Cải Tiến Trong Tương Lai
-- Tích hợp `No_OBS` và `Part_OBS` với GUI để hiển thị từng bước.
-- Cho phép người dùng định nghĩa trạng thái mục tiêu.
-- Tối ưu hóa thuật toán để xử lý nhanh hơn.
-- Thêm hiệu ứng chuyển động cho quân xe trên bàn cờ.
-
-## Giấy Phép
-Dự án phục vụ mục đích học tập, không dùng cho mục đích thương mại. Vui lòng ghi nguồn nếu chỉnh sửa hoặc phân phối.
