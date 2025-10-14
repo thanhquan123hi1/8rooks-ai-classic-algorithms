@@ -132,5 +132,89 @@ def draw_groupBtn(screen, title, x, y, buttons, font,
 
     return btn_rects
 
-def drawInfor():
-    pass
+def draw_info_panel(screen, font, x, y, w, h, info, mouse_pos, mouse_click):
+    """Vẽ panel thông tin bên phải"""
+    pygame.draw.rect(screen, (230, 230, 230), (x, y, w, h), border_radius=12)
+    pygame.draw.rect(screen, (0, 0, 0), (x, y, w, h), 2, border_radius=12)
+
+    # Tiêu đề
+    title = font.render("THÔNG TIN THUẬT TOÁN", True, (20, 20, 120))
+    screen.blit(title, (x + 10, y + 10))
+
+    # Vẽ từng dòng thông tin
+    offset_y = y + 45
+    for key, value in info.items():
+        text = font.render(f"{key}: {value}", True, (0, 0, 0))
+        screen.blit(text, (x + 15, offset_y))
+        offset_y += 28
+
+    # Nút DETAIL
+    btn_detail = pygame.Rect(x + w // 2 - 60, y + h - 60, 120, 40)
+    draw_Btn(screen, btn_detail, "DETAIL", font, mouse_pos, mouse_click)
+    return btn_detail
+
+
+def draw_detail_board(screen, font, detail_texts):
+    """Vẽ bảng chi tiết (overlay có nút EXIT và định dạng gọn hơn)."""
+    overlay = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
+    overlay.fill((0, 0, 0, 180))
+    screen.blit(overlay, (0, 0))
+
+    # Kích thước bảng mở rộng
+    box_w, box_h = 700, 500
+    box_x = (screen.get_width() - box_w) // 2
+    box_y = (screen.get_height() - box_h) // 2
+
+    # Vẽ khung nền
+    pygame.draw.rect(screen, (255, 255, 255), (box_x, box_y, box_w, box_h), border_radius=10)
+    pygame.draw.rect(screen, (0, 0, 0), (box_x, box_y, box_w, box_h), 2, border_radius=10)
+
+    title = font.render("CHI TIẾT THUẬT TOÁN", True, (0, 0, 80))
+    screen.blit(title, (box_x + box_w // 2 - title.get_width() // 2, box_y + 15))
+
+    # Nút EXIT (góc trên bên phải)
+    btn_exit = pygame.Rect(box_x + box_w - 90, box_y + 15, 70, 35)
+    draw_Btn(screen, btn_exit, "EXIT", font, pygame.mouse.get_pos(), pygame.mouse.get_pressed())
+    
+    # Nội dung chi tiết
+    y_offset = box_y + 65
+    for line in detail_texts:
+        # --- nếu là ma trận 8x8 → rút gọn dạng danh sách tọa độ có quân ---
+        if line.startswith("Step") and "[[" in line:
+            try:
+                # Lấy ma trận từ chuỗi
+                matrix_str = line.split(":")[1].strip()
+                matrix = eval(matrix_str)
+                coords = [(r, c) for r in range(len(matrix))
+                          for c in range(len(matrix[r])) if matrix[r][c] == 1]
+                text = f"{line.split(':')[0]}: {coords}"
+            except Exception:
+                text = line
+        else:
+            text = line
+
+        wrapped = wrap_text(text, font, box_w - 40)
+        for subline in wrapped:
+            text_surf = font.render(subline, True, (0, 0, 0))
+            screen.blit(text_surf, (box_x + 20, y_offset))
+            y_offset += 24
+            if y_offset > box_y + box_h - 50:
+                break
+
+    return btn_exit
+
+
+def wrap_text(text, font, max_width):
+    """Tự động xuống dòng khi text quá dài."""
+    words = text.split(' ')
+    lines = []
+    current_line = ""
+    for word in words:
+        test_line = current_line + word + " "
+        if font.size(test_line)[0] < max_width:
+            current_line = test_line
+        else:
+            lines.append(current_line)
+            current_line = word + " "
+    lines.append(current_line)
+    return lines
