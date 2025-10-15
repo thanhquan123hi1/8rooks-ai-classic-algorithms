@@ -12,7 +12,7 @@
 - [Lưu Ý](#lưu-ý)
 
 ## Tổng Quan
-Dự án là ứng dụng Python giải bài toán **8 quân xe**, đặt 8 quân xe trên bàn cờ 8x8 sao cho không quân nào đe dọa lẫn nhau (không cùng hàng hoặc cột). Sử dụng Pygame để cung cấp giao diện đồ họa và triển khai nhiều thuật toán tìm kiếm.
+Đây là project cá nhân (cho môn *Trí Tuệ Nhân Tạo*) phụ vụ cho việc trực quan hóa giải bài toán **8 quân xe**, đặt 8 quân xe trên bàn cờ 8x8 sao cho không quân nào đe dọa lẫn nhau (không cùng hàng hoặc cột). Sử dụng Pygame để thiết kế giao diện và triển khai nhiều thuật toán tìm kiếm.
 
 ## Tính Năng
 - **Giao diện đồ họa**: Hiển thị bàn cờ, trạng thái hiện tại, trạng thái mục tiêu và thông tin thuật toán.
@@ -21,7 +21,7 @@ Dự án là ứng dụng Python giải bài toán **8 quân xe**, đặt 8 quâ
   - **Tìm kiếm có thông tin**: Greedy Search, A*.
   - **Tìm kiếm cục bộ**: Hill Climbing, Simulated Annealing, Beam Search, Genetic Algorithm.
   - **Tìm kiếm không xác định**: AND-OR, No Observation, Partial Observation.
-  - **CSP**: Backtracking, Forward Checking.
+  - **CSP**: Backtracking, Forward Checking, AC3
 - **Tương tác**: Chọn thuật toán, xem từng bước, xem chi tiết đường đi và đặt lại bàn cờ.
 - **Hiệu suất**: Hiển thị thời gian chạy, số trạng thái duyệt và kết quả thành công/thất bại.
 
@@ -34,8 +34,8 @@ Dự án là ứng dụng Python giải bài toán **8 quân xe**, đặt 8 quâ
 - `nondeterministic.py`: Thuật toán tìm kiếm không xác định.
 - `Demo_NoOBS.py`: Thuật toán No Observation.
 - `Demo_PartialOBS.py`: Thuật toán Partial Observation.
-- `CSP.py`: Thuật toán Backtracking và Forward Checking.
-- `imgs/`: Chứa hình ảnh (`w_rook.png`, `refresh.png`).
+- `CSP.py`: Thuật toán Backtracking Forward Checking và AC3.
+- `imgs/`: Chứa hình ảnh và các gif chạy demo các thuật toán.
 
 ## Yêu Cầu
 - Python 3.x
@@ -127,5 +127,5 @@ pip install pygame numpy
 ## Lưu Ý
 - Trạng thái mục tiêu được định nghĩa trong `main.py`.
 - `No_OBS` và `Part_OBS` in kết quả ra console, chưa tích hợp đầy đủ với GUI.
-- Hiệu suất phụ thuộc vào thuật toán; một số thuật toán (như Genetic Algorithm) có thể không luôn tìm được nghiệm.
+- Hiệu suất phụ thuộc vào thuật toán; một số thuật toán (như Simulated Annealing, Genetic Algorithm, No_OBS và Part_OBS) có thể không tìm được trạng thái mục tiêu.
 
