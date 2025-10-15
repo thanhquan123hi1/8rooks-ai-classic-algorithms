@@ -120,9 +120,9 @@ pip install pygame numpy
   - Genetic Algorithm:
     ![Genetic Algorithm](Imgs/Gen-1.gif)
 - **CSP**:
-  - Beam Search:
+  - Backtracking:
     ![Backtracking](Imgs/backtrack-1.gif)
-  - Genetic Algorithm:
+  - Forward Checking:
     ![Forward Checking](Imgs/forward-1.gif)
 ## Lưu Ý
 - Trạng thái mục tiêu được định nghĩa trong `main.py`.
