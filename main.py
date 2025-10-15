@@ -78,25 +78,25 @@ def main():
                                 start_time = time.time()  # bắt đầu tính giờ
                                 result_message = ""
 
-                # --- Nút KẾT QUẢ ---
+                # Nút KẾT QUẢ 
                 if btnResult.collidepoint(event.pos) and path_generator is not None:
                     info_panel, detail_lines, found, final_state = compute_result(path_generator, goal, current_algo)
                     result_message = f"{current_algo} {'thành công!' if found else 'thất bại!'}"
                     show_mes = pygame.time.get_ticks() + 4000
                     steps = None
 
-                    # ✅ Hiển thị trạng thái cuối cùng lên bàn cờ rỗng
+                    # Hiển thị trạng thái cuối cùng lên bàn cờ rỗng
                     if isinstance(final_state, np.ndarray):
                         root = final_state.copy()
 
-                # --- REFRESH ---
+                # REFRESH 
                 if btnRefresh.collidepoint(event.pos):
                     root = np.zeros((8, 8), dtype=int)
                     steps = current_step = current_algo = path_generator = None
                     info_panel = {"Thuật toán": "Chưa chọn", "Thời gian": "0.0s", "Số state": "0", "Kết quả": "—"}
                     result_message = ""
 
-        # --- Cập nhật từng bước ---
+        # Cập nhật từng bước 
         if steps is not None and current_step is not None:
             root, path = current_step
             try:
@@ -133,7 +133,7 @@ def main():
 
                 steps = None
 
-        # --- Vẽ giao diện ---
+        # Vẽ giao diện 
         screen.fill((130, 148, 96))
         draw_board(screen, SIZE, SIZE + 30, mouse_pos, board=root)
         draw_board(screen, N * SIZE + 2.5 * MARGIN, SIZE + 30, mouse_pos, board=goal)
@@ -144,27 +144,27 @@ def main():
         for title, gx, gy, gw, gh, btns in groups:
             draw_groupBtn(screen, title, gx, gy, btns, font, mouse_pos, mouse_click, group_size=(gw, gh))
 
-        # --- Nút refresh & kết quả ---
+        # Nút refresh & kết quả 
         imgRefresh = pygame.image.load("imgs/refresh.png")
         imgRefresh = pygame.transform.smoothscale(imgRefresh, (20, 20))
         draw_Btn(screen, btnRefresh, "", font, mouse_pos, mouse_click, img=imgRefresh)
         draw_Btn(screen, btnResult, "KẾT QUẢ", font, mouse_pos, mouse_click)
 
-        # --- Panel thông tin lớn hơn ---
+        # Panel thông tin lớn hơn 
         btn_detail = draw_info_panel(screen, pygame.font.SysFont("Cambria", 20, bold=True),
                                      WIDTH - 380, 60, 350, 400, info_panel, mouse_pos, mouse_click)
 
-        # ✅ Xử lý click cho nút DETAIL (sử dụng đúng btn_detail trả về)
+        # Xử lý click cho nút DETAIL (sử dụng đúng btn_detail trả về)
         if pygame.mouse.get_pressed()[0] and btn_detail.collidepoint(mouse_pos):
             show_detail = True
 
-        # ✅ Hiển thị panel chi tiết
+        # Hiển thị panel chi tiết
         if show_detail:
             btn_exit = draw_detail_board(screen, font, detail_lines)
             if mouse_click[0] and btn_exit.collidepoint(mouse_pos):
                 show_detail = False
 
-        # --- Dòng kết quả nhấp nháy đỏ ---
+        # Dòng kết quả nhấp nháy đỏ 
         now = pygame.time.get_ticks()
         if result_message and now < show_mes and (now // 100) % 2 == 0:
             lblMsg = pygame.font.SysFont("Cambria", 22, bold=True).render(result_message, True, 'Red')

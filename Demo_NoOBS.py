@@ -3,6 +3,7 @@ import random
 import time   
 N = 8  
 
+
 def make_board(perm):
     """Tạo ma trận 8x8 từ một hoán vị."""
     board = np.zeros((N, N), dtype=int)
@@ -81,7 +82,7 @@ def action(belief_state, N=8):
 def is_goal(board, goals):
     return any(np.array_equal(board, g) for g in goals)
 
-def search_no_observation(root_belief, goals, max_depth=50):
+def search_no_observation(root_belief, goals, max_depth=100):
 
     stack = [(root_belief, 0)]
     explored = set()

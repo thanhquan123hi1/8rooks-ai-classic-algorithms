@@ -15,9 +15,7 @@ def run_algorithm(name, root, goal):
     info_panel = {}
     detail_lines = []
 
-    # ===============================================================
-    # --- Uninformed Search ---
-    # ===============================================================
+    # Uninformed Search
     if name == "BFS": 
         steps = BFS(root, goal)
     elif name == "UCS": 
@@ -29,9 +27,7 @@ def run_algorithm(name, root, goal):
     elif name == "IDS": 
         steps = IDS(root, goal, 1000)
 
-    # ===============================================================
-    # --- Informed Search ---
-    # ===============================================================
+    # Informed Search 
     elif name == "Greedy_S": 
         steps = GreedySearch(root, goal)
         current_algo = "Greedy"
@@ -39,9 +35,7 @@ def run_algorithm(name, root, goal):
         steps = A_Sao(root, goal)
         current_algo = "A*"
 
-    # ===============================================================
-    # --- Local Search ---
-    # ===============================================================
+    #  Local Search 
     elif name == "Hill_S": 
         steps = Hill_Search(root, goal)
         current_algo = "Hill Climbing"
@@ -55,9 +49,7 @@ def run_algorithm(name, root, goal):
         steps = Genetic_Algorithm(root, goal)
         current_algo = "Genetic Algorithm"
 
-    # ===============================================================
-    # --- Nondeterministic Search ---
-    # ===============================================================
+    # Nondeterministic Search
     elif name == "AND_OR": 
         steps = AND_OR_Search(root, goal)
         current_algo = "AND-OR"
@@ -70,9 +62,7 @@ def run_algorithm(name, root, goal):
         POBS.run_algorithm()
         return None, "Partial Observation", None, []
 
-    # ===============================================================
-    # --- CSP (Constraint Satisfaction Problems) ---
-    # ===============================================================
+    # CSP (Constraint Satisfaction Problems) 
     elif name == "BackTr":
         # Gọi generator của CSP để mô phỏng từng bước
         steps = run_CSP("bt", visualize=True)
@@ -80,7 +70,6 @@ def run_algorithm(name, root, goal):
         return steps, current_algo, {}, []
 
     elif name == "ForwCh":
-        # Gọi generator của CSP để mô phỏng từng bước
         steps = run_CSP("fc", visualize=True)
         current_algo = "Forward Checking"
         return steps, current_algo, {}, []
@@ -90,15 +79,11 @@ def run_algorithm(name, root, goal):
         return steps, current_algo, {}, []
 
 
-    # ===============================================================
     # Trả kết quả cho các thuật toán có generator
-    # ===============================================================
     return steps, current_algo, info_panel, detail_lines
 
 
-# ==================================================================
 # HÀM TÍNH KẾT QUẢ CUỐI CÙNG
-# ==================================================================
 def compute_result(steps, goal, current_algo):
     """Chạy toàn bộ thuật toán và trả về kết quả cuối cùng cho UI."""
     found = False
@@ -139,6 +124,6 @@ def compute_result(steps, goal, current_algo):
         for i, state in enumerate(last_path):
             detail_lines.append(f"Step {i+1}: {state.tolist() if isinstance(state, np.ndarray) else state}")
 
-    # ✅ Trả thêm trạng thái cuối cùng để main.py có thể hiển thị lên bàn cờ
+    # Trả thêm trạng thái cuối cùng để main.py có thể hiển thị lên bàn cờ
     return info_panel, detail_lines, found, last_state
 
