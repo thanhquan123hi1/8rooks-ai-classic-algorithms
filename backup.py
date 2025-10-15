@@ -1,7 +1,7 @@
 import numpy as np
 import time
+import copy
 import random
-from collections import deque
 
 # ---------------------------------------------------------------
 # CẤU HÌNH CƠ BẢN
@@ -9,11 +9,10 @@ from collections import deque
 N = 8
 count_bt = 0
 count_fc = 0
-count_ac3 = 0
 
 
 # ---------------------------------------------------------------
-# HÀM KIỂM TRA RÀNG BUỘC CHUNG (Backtracking & Forward Checking)
+# HÀM KIỂM TRA RÀNG BUỘC (không cùng hàng, không cùng cột)
 # ---------------------------------------------------------------
 def consistent(assignment, value):
     """Kiểm tra xem value có hợp lệ với các giá trị đã gán không."""
@@ -99,102 +98,30 @@ def forwardchecking(assignment, domains):
 
 
 # ---------------------------------------------------------------
-# ALGORITHM 6.2: AC-3 (Arc Consistency)
-# ---------------------------------------------------------------
-def consistent_ac3(vi, vj):
-    """Ràng buộc: không trùng hàng hoặc trùng cột."""
-    r1, c1 = vi
-    r2, c2 = vj
-    return not (r1 == r2 or c1 == c2)
-
-
-def ac3(domains):
-    """
-    Thuật toán AC-3 (Arc Consistency) — Duy trì tính nhất quán cung.
-    Có yield để visualize tương tự 2 thuật toán kia.
-    """
-    global count_ac3
-    queue = deque([(xi, xj) for xi in range(N) for xj in range(N) if xi != xj])
-
-    # Hiển thị trạng thái ban đầu
-    board = np.zeros((N, N), dtype=int)
-    yield board, []
-
-    while queue:
-        xi, xj = queue.popleft()
-        count_ac3 += 1
-
-        # Gộp trực tiếp phần REMOVE-INCONSISTENT vào trong thân hàm cho gọn
-        removed = False
-        new_domain_xi = []
-        for vi in domains[xi]:
-            if any(consistent_ac3(vi, vj) for vj in domains[xj]):
-                new_domain_xi.append(vi)
-        if len(new_domain_xi) < len(domains[xi]):
-            domains[xi] = new_domain_xi
-            removed = True
-
-        # Nếu có giá trị bị loại bỏ → cập nhật lại các cung liên quan
-        if removed:
-            if not domains[xi]:
-                return
-            for xk in range(N):
-                if xk != xi and xk != xj:
-                    queue.append((xk, xi))
-
-        # Cập nhật board để visualize
-        board = np.zeros((N, N), dtype=int)
-        for r, vals in domains.items():
-            if len(vals) == 1:
-                _, c = vals[0]
-                board[r, c] = 1
-        yield board, []
-
-    # Khi AC-3 kết thúc → sinh lời giải tạm (chọn 1 giá trị hợp lệ mỗi hàng)
-    assignment = []
-    for r in range(N):
-        if len(domains[r]) == 1:
-            assignment.append(domains[r][0])
-        else:
-            assignment.append(random.choice(domains[r]))
-    board = np.zeros((N, N), dtype=int)
-    for (r, c) in assignment:
-        board[r, c] = 1
-    yield board, assignment[:]
-
-
-# ---------------------------------------------------------------
-# HÀM TỔNG HỢP: RUN ALGORITHM (dùng chung)
+# HÀM TỔNG HỢP: RUN ALGORITHM
 # ---------------------------------------------------------------
 def run_algorithm(algorithm="bt", visualize=False):
     """
     Nếu visualize=True → trả generator (để UI hiển thị từng bước).
     Nếu visualize=False → chạy toàn bộ và in ra kết quả.
     """
-    global count_bt, count_fc, count_ac3
-    count_bt = count_fc = count_ac3 = 0
+    global count_bt, count_fc
+    count_bt = 0
+    count_fc = 0
 
     start = time.time()
     found = False
     total_states = 0
     last_state, last_path = None, None
 
-    # --- Chọn thuật toán ---
+    # Chọn thuật toán
     if algorithm == "bt":
         steps = backtracking([])
-        name = "BACKTRACKING"
-    elif algorithm == "fc":
+    else:
         domains = {r: [(r, c) for c in range(N)] for r in range(N)}
         steps = forwardchecking([], domains)
-        name = "FORWARD CHECKING"
-    elif algorithm == "ac3":
-        domains = {r: [(r, c) for c in range(N)] for r in range(N)}
-        steps = ac3(domains)
-        name = "AC-3 (Arc Consistency)"
-    else:
-        raise ValueError("Thuật toán không hợp lệ!")
 
-    # --- Nếu visualize trên UI ---
+    # Nếu dùng trong UI → trả generator
     if visualize:
         return steps
 
@@ -203,29 +130,25 @@ def run_algorithm(algorithm="bt", visualize=False):
         for state, path in steps:
             last_state, last_path = state, path
             total_states += 1
-            if algorithm != "ac3" and len(path) == N:
+            if len(path) == N:
                 found = True
                 break
     except StopIteration:
         pass
 
     elapsed = time.time() - start
+    name = "BACKTRACKING" if algorithm == "bt" else "FORWARD CHECKING"
 
-    # --- In kết quả ---
-    if algorithm == "bt":
-        count = count_bt
-    elif algorithm == "fc":
-        count = count_fc
-    else:
-        count = count_ac3
-
-    print(f"=== {name} ===")
-    print(f"Thời gian chạy: {elapsed:.4f}s")
-    print(f"Số trạng thái duyệt: {count}")
-    if last_state is not None:
+    if found:
+        print(f"=== {name} ===")
+        print(f"Thời gian chạy: {elapsed:.4f}s")
+        print(f"Số trạng thái duyệt: {count_bt if algorithm == 'bt' else count_fc}")
+        print("\nĐường đi (các vị trí đặt quân):")
+        for i, pos in enumerate(last_path, 1):
+            print(f"Step {i}: {pos}")
         print("\nBoard kết quả:")
         print(last_state)
     else:
-        print("Không tìm thấy nghiệm!")
+        print(f"{name}: Không tìm thấy nghiệm!")
 
     return last_state, last_path, elapsed

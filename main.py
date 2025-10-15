@@ -1,4 +1,4 @@
-import pygame, sys, numpy as np
+import pygame, sys, numpy as np, time
 from ui import *
 from controller import run_algorithm, compute_result
 
@@ -30,7 +30,8 @@ def init_game():
         ("Informed Search", 350, 670, 300, 65, ["Greedy_S", "A*"]),
         ("Local Search", 350, 540, 300, 105, ["Hill_S", "S_A", "Beam_S", "Gen_A"]),
         ("Nondeterministic", 25, 670, 300, 65, ["AND_OR", "No_OBS", "Part_OBS"]),
-        ("CPS", 675, 540, 300, 105, ["BackTr", "ForwCh"]),
+        ("CSP", 675, 540, 300, 140, ["BackTr", "ForwCh", "AC3"]),
+
     ]
 
     lblEmpty = pygame.font.SysFont("Cambria", 30, bold=True).render("BÀN CỜ RỖNG", True, (0, 0, 80))
@@ -45,9 +46,11 @@ def main():
     screen, root, goal, groups, lblEmpty, lblGoal, btnRefresh, btnResult = init_game()
     clock = pygame.time.Clock()
     steps = current_step = current_algo = None
+    path_generator = None
     info_panel = {"Thuật toán": "Chưa chọn", "Thời gian": "0.0s", "Số state": "0", "Kết quả": "—"}
     result_message, show_mes = "", 0
     show_detail, detail_lines = False, []
+    start_time = 0
 
     while True:
         mouse_pos, mouse_click = pygame.mouse.get_pos(), pygame.mouse.get_pressed()
@@ -68,18 +71,25 @@ def main():
                             if result is None:
                                 continue
                             steps, current_algo, new_info, detail_lines = result
+                            path_generator = steps
                             if new_info:
                                 info_panel = new_info
                             if steps is not None:
                                 current_step = next(steps, (root, []))
+                                start_time = time.time()  # bắt đầu tính giờ
                                 result_message = ""
 
                 # --- Nút KẾT QUẢ ---
-                if btnResult.collidepoint(event.pos) and steps is not None:
-                    info_panel, detail_lines, found = compute_result(steps, goal, current_algo)
+                if btnResult.collidepoint(event.pos) and path_generator is not None:
+                    info_panel, detail_lines, found, final_state = compute_result(path_generator, goal, current_algo)
                     result_message = f"{current_algo} {'thành công!' if found else 'thất bại!'}"
                     show_mes = pygame.time.get_ticks() + 4000
                     steps = None
+
+                    # ✅ Hiển thị trạng thái cuối cùng lên bàn cờ rỗng
+                    if isinstance(final_state, np.ndarray):
+                        root = final_state.copy()
+
 
                 # --- DETAIL ---
                 if pygame.Rect(WIDTH - 310 + 100, 100 + 240, 120, 40).collidepoint(event.pos):
@@ -90,20 +100,42 @@ def main():
                     if event.type == pygame.MOUSEBUTTONDOWN and btn_exit.collidepoint(event.pos):
                         show_detail = False
 
-
                 # --- REFRESH ---
                 if btnRefresh.collidepoint(event.pos):
                     root = np.zeros((8, 8), dtype=int)
-                    steps = current_step = current_algo = None
+                    steps = current_step = current_algo = path_generator = None
                     info_panel = {"Thuật toán": "Chưa chọn", "Thời gian": "0.0s", "Số state": "0", "Kết quả": "—"}
                     result_message = ""
 
-        # --- Cập nhật bước kế tiếp ---
+        # --- Cập nhật từng bước ---
         if steps is not None and current_step is not None:
             root, path = current_step
             try:
                 current_step = next(steps)
             except StopIteration:
+                if path:
+                    elapsed_time = time.time() - start_time
+                    total_states = len(path)
+                    found = np.array_equal(path[-1], goal)
+
+                    info_panel = {
+                        "Thuật toán": current_algo,
+                        "Thời gian": f"{elapsed_time:.4f}s",
+                        "Số state": str(total_states),
+                        "Kết quả": "Thành công" if found else "Thất bại"
+                    }
+
+                    detail_lines = [
+                        f"Thuật toán: {current_algo}",
+                        f"Thời gian: {elapsed_time:.4f}s",
+                        f"Tổng state: {total_states}",
+                        f"Kết quả: {'Thành công' if found else 'Thất bại'}",
+                        "------ Đường đi ------",
+                    ] + [f"Step {i+1}: {state.tolist()}" for i, state in enumerate(path)]
+
+                    result_message = f"{current_algo} {'thành công!' if found else 'thất bại!'}"
+                    show_mes = pygame.time.get_ticks() + 4000
+
                 steps = None
 
         # --- Vẽ giao diện ---
@@ -113,22 +145,29 @@ def main():
         screen.blit(lblEmpty, (SIZE + 150, 4))
         screen.blit(lblGoal, (N * SIZE + 2.5 * MARGIN + 150, 4))
 
+        # Các nhóm nút thuật toán
         for title, gx, gy, gw, gh, btns in groups:
             draw_groupBtn(screen, title, gx, gy, btns, font, mouse_pos, mouse_click, group_size=(gw, gh))
 
+        # --- Nút refresh & kết quả ---
         imgRefresh = pygame.image.load("imgs/refresh.png")
         imgRefresh = pygame.transform.smoothscale(imgRefresh, (20, 20))
         draw_Btn(screen, btnRefresh, "", font, mouse_pos, mouse_click, img=imgRefresh)
         draw_Btn(screen, btnResult, "KẾT QUẢ", font, mouse_pos, mouse_click)
-        draw_info_panel(screen, font, WIDTH - 310, 100, 280, 300, info_panel, mouse_pos, mouse_click)
 
+        # --- Panel thông tin lớn hơn ---
+        draw_info_panel(screen, pygame.font.SysFont("Cambria", 20, bold=True),
+                        WIDTH - 380, 60, 350, 400, info_panel, mouse_pos, mouse_click)
+
+        # --- Detail ---
         if show_detail:
             draw_detail_board(screen, font, detail_lines)
 
+        # --- Dòng kết quả nhấp nháy đỏ (đưa xuống dưới) ---
         now = pygame.time.get_ticks()
         if result_message and now < show_mes and (now // 100) % 2 == 0:
             lblMsg = pygame.font.SysFont("Cambria", 22, bold=True).render(result_message, True, 'Red')
-            screen.blit(lblMsg, (SIZE + 450, SIZE))
+            screen.blit(lblMsg, (WIDTH//2 - lblMsg.get_width()//2 + 100, HEIGHT - 60))
 
         pygame.display.update()
         clock.tick(30)
