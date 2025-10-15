@@ -96,6 +96,13 @@ pip install pygame numpy
   - **Forward Checking**: Giảm miền giá trị sau mỗi bước gán.
 
 ## Minh Họa Thuật Toán (GIF)
+- **Tìm kiếm không thông tin**:
+  - ![BFS](Imgs/BFS-1.gif)
+  - ![UCS](Imgs/UCS-1.gif)
+  - ![DFS](Imgs/DFS-1.gif)
+  - ![DLS](Imgs/DLS-1.gif)
+  - ![IDS](Imgs/IDS-1.gif)
+
 
 ## Lưu Ý
 - Trạng thái mục tiêu được định nghĩa trong `main.py`.
