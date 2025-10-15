@@ -31,7 +31,6 @@ def init_game():
         ("Local Search", 350, 540, 300, 105, ["Hill_S", "S_A", "Beam_S", "Gen_A"]),
         ("Nondeterministic", 25, 670, 300, 65, ["AND_OR", "No_OBS", "Part_OBS"]),
         ("CSP", 675, 540, 300, 140, ["BackTr", "ForwCh", "AC3"]),
-
     ]
 
     lblEmpty = pygame.font.SysFont("Cambria", 30, bold=True).render("BÀN CỜ RỖNG", True, (0, 0, 80))
@@ -90,16 +89,6 @@ def main():
                     if isinstance(final_state, np.ndarray):
                         root = final_state.copy()
 
-
-                # --- DETAIL ---
-                if pygame.Rect(WIDTH - 310 + 100, 100 + 240, 120, 40).collidepoint(event.pos):
-                    show_detail = True
-                    
-                if show_detail:
-                    btn_exit = draw_detail_board(screen, font, detail_lines)
-                    if event.type == pygame.MOUSEBUTTONDOWN and btn_exit.collidepoint(event.pos):
-                        show_detail = False
-
                 # --- REFRESH ---
                 if btnRefresh.collidepoint(event.pos):
                     root = np.zeros((8, 8), dtype=int)
@@ -131,7 +120,13 @@ def main():
                         f"Tổng state: {total_states}",
                         f"Kết quả: {'Thành công' if found else 'Thất bại'}",
                         "------ Đường đi ------",
-                    ] + [f"Step {i+1}: {state.tolist()}" for i, state in enumerate(path)]
+                    ]
+
+                    for i, state in enumerate(path):
+                        if isinstance(state, np.ndarray):
+                            detail_lines.append(f"Step {i+1}: {state.tolist()}")
+                        else:
+                            detail_lines.append(f"Step {i+1}: {state}")
 
                     result_message = f"{current_algo} {'thành công!' if found else 'thất bại!'}"
                     show_mes = pygame.time.get_ticks() + 4000
@@ -156,14 +151,20 @@ def main():
         draw_Btn(screen, btnResult, "KẾT QUẢ", font, mouse_pos, mouse_click)
 
         # --- Panel thông tin lớn hơn ---
-        draw_info_panel(screen, pygame.font.SysFont("Cambria", 20, bold=True),
-                        WIDTH - 380, 60, 350, 400, info_panel, mouse_pos, mouse_click)
+        btn_detail = draw_info_panel(screen, pygame.font.SysFont("Cambria", 20, bold=True),
+                                     WIDTH - 380, 60, 350, 400, info_panel, mouse_pos, mouse_click)
 
-        # --- Detail ---
+        # ✅ Xử lý click cho nút DETAIL (sử dụng đúng btn_detail trả về)
+        if pygame.mouse.get_pressed()[0] and btn_detail.collidepoint(mouse_pos):
+            show_detail = True
+
+        # ✅ Hiển thị panel chi tiết
         if show_detail:
-            draw_detail_board(screen, font, detail_lines)
+            btn_exit = draw_detail_board(screen, font, detail_lines)
+            if mouse_click[0] and btn_exit.collidepoint(mouse_pos):
+                show_detail = False
 
-        # --- Dòng kết quả nhấp nháy đỏ (đưa xuống dưới) ---
+        # --- Dòng kết quả nhấp nháy đỏ ---
         now = pygame.time.get_ticks()
         if result_message and now < show_mes and (now // 100) % 2 == 0:
             lblMsg = pygame.font.SysFont("Cambria", 22, bold=True).render(result_message, True, 'Red')

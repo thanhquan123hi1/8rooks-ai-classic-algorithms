@@ -99,7 +99,7 @@ def forwardchecking(assignment, domains):
 
 
 # ---------------------------------------------------------------
-# ALGORITHM 6.2: AC-3 (Arc Consistency)
+# ALGORITHM 6.2: AC-3 (Arc Consistency) — FIXED for UI visualization
 # ---------------------------------------------------------------
 def consistent_ac3(vi, vj):
     """Ràng buộc: không trùng hàng hoặc trùng cột."""
@@ -111,7 +111,7 @@ def consistent_ac3(vi, vj):
 def ac3(domains):
     """
     Thuật toán AC-3 (Arc Consistency) — Duy trì tính nhất quán cung.
-    Có yield để visualize tương tự 2 thuật toán kia.
+    Có yield để visualize từng bước giống Backtracking và Forward Checking.
     """
     global count_ac3
     queue = deque([(xi, xj) for xi in range(N) for xj in range(N) if xi != xj])
@@ -124,20 +124,26 @@ def ac3(domains):
         xi, xj = queue.popleft()
         count_ac3 += 1
 
-        # Gộp trực tiếp phần REMOVE-INCONSISTENT vào trong thân hàm cho gọn
         removed = False
         new_domain_xi = []
         for vi in domains[xi]:
+            # Giữ lại các giá trị còn tương thích với ít nhất một giá trị của xj
             if any(consistent_ac3(vi, vj) for vj in domains[xj]):
                 new_domain_xi.append(vi)
+
+        # Nếu có giá trị bị loại bỏ khỏi domain
         if len(new_domain_xi) < len(domains[xi]):
             domains[xi] = new_domain_xi
             removed = True
 
-        # Nếu có giá trị bị loại bỏ → cập nhật lại các cung liên quan
+        # Nếu domain bị rỗng → không có nghiệm
+        if not domains[xi]:
+            board = np.zeros((N, N), dtype=int)
+            yield board, []  # visualize thất bại
+            return
+
+        # Nếu có giá trị bị loại bỏ → thêm lại các cung liên quan
         if removed:
-            if not domains[xi]:
-                return
             for xk in range(N):
                 if xk != xi and xk != xj:
                     queue.append((xk, xi))
@@ -148,19 +154,24 @@ def ac3(domains):
             if len(vals) == 1:
                 _, c = vals[0]
                 board[r, c] = 1
-        yield board, []
 
-    # Khi AC-3 kết thúc → sinh lời giải tạm (chọn 1 giá trị hợp lệ mỗi hàng)
+        # ✅ Trả danh sách các giá trị hiện còn trong domain (để UI thấy thay đổi)
+        flat_values = list(sum(domains.values(), []))
+        yield board, flat_values
+
+    # ✅ Sau khi AC-3 kết thúc, sinh một lời giải hợp lệ (nếu có)
     assignment = []
     for r in range(N):
         if len(domains[r]) == 1:
             assignment.append(domains[r][0])
         else:
             assignment.append(random.choice(domains[r]))
+
     board = np.zeros((N, N), dtype=int)
     for (r, c) in assignment:
         board[r, c] = 1
-    yield board, assignment[:]
+
+    yield board, assignment[:]  # trạng thái cuối để hiển thị lên bàn cờ rỗng
 
 
 # ---------------------------------------------------------------
