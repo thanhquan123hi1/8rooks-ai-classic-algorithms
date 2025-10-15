@@ -10,9 +10,6 @@
 - [Mô Tả Thuật Toán](#mô-tả-thuật-toán)
 - [Minh Họa Thuật Toán (GIF)](#minh-họa-thuật-toán-gif)
 - [Lưu Ý](#lưu-ý)
-- [Hạn Chế](#hạn-chế)
-- [Cải Tiến Trong Tương Lai](#cải-tiến-trong-tương-lai)
-- [Giấy Phép](#giấy-phép)
 
 ## Tổng Quan
 Dự án là ứng dụng Python giải bài toán **8 quân xe**, đặt 8 quân xe trên bàn cờ 8x8 sao cho không quân nào đe dọa lẫn nhau (không cùng hàng hoặc cột). Sử dụng Pygame để cung cấp giao diện đồ họa và triển khai nhiều thuật toán tìm kiếm.
@@ -97,13 +94,36 @@ pip install pygame numpy
 
 ## Minh Họa Thuật Toán (GIF)
 - **Tìm kiếm không thông tin**:
-  - ![BFS](Imgs/BFS-1.gif)
-  - ![UCS](Imgs/UCS-1.gif)
-  - ![DFS](Imgs/DFS-1.gif)
-  - ![DLS](Imgs/DLS-1.gif)
-  - ![IDS](Imgs/IDS-1.gif)
+  - BFS:
+    ![BFS](Imgs/BFS-1.gif)
+  - UCS:
+    ![UCS](Imgs/UCS-1.gif)
+  - DFS:
+    ![DFS](Imgs/DFS-1.gif)
+  - DLS:
+    ![DLS](Imgs/DLS-1.gif)
+  - IDS:
+    ![IDS](Imgs/IDS-1.gif)
 
-
+- **Tìm kiếm có thông tin**:
+  - A*:
+    ![A*](Imgs/AStar-1.gif)
+  - Greedy Search:
+    ![Greedy Search](Imgs/GS-1.gif)
+- **Tìm kiếm cục bộ**:
+  - Hill Climbing:
+    ![Hill Climbing](Imgs/hill-1.gif)
+  - Simulated Annealing:
+    ![Simulated Annealing](Imgs/SA-1.gif)
+  - Beam Search:
+    ![Beam Search](Imgs/beam-1.gif)
+  - Genetic Algorithm:
+    ![Genetic Algorithm](Imgs/Gen-1.gif)
+- **CSP**:
+  - Beam Search:
+    ![Backtracking](Imgs/backtrack-1.gif)
+  - Genetic Algorithm:
+    ![Forward Checking](Imgs/forward-1.gif)
 ## Lưu Ý
 - Trạng thái mục tiêu được định nghĩa trong `main.py`.
 - `No_OBS` và `Part_OBS` in kết quả ra console, chưa tích hợp đầy đủ với GUI.
