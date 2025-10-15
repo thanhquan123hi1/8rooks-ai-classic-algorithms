@@ -105,7 +105,6 @@ pip install pygame numpy
 ## Minh Họa Thuật Toán (GIF)
 
 - **Tìm kiếm không thông tin**:
-
   - BFS:
     ![BFS](Imgs/BFS-1.gif)
   - UCS:
@@ -137,32 +136,11 @@ pip install pygame numpy
   - No Observation: _in kết quả ra console, chưa tích hợp đầy đủ với GUI._
   - Partial Observation: _in kết quả ra console, chưa tích hợp đầy đủ với GUI._
 - **CSP**:
-
   - Backtracking:
     ![Backtracking](Imgs/backtrack-1.gif)
   - Forward Checking:
     ![Forward Checking](Imgs/forward-1.gif)
   - AC3: _Đang cải tiến_
-
-- **Tìm kiếm có thông tin**:
-  - A*:
-    ![A*](Imgs/AStar-1.gif)
-  - Greedy Search:
-    ![Greedy Search](Imgs/GS-1.gif)
-- **Tìm kiếm cục bộ**:
-  - Hill Climbing:
-    ![Hill Climbing](Imgs/hill-1.gif)
-  - Simulated Annealing:
-    ![Simulated Annealing](Imgs/SA-1.gif)
-  - Beam Search:
-    ![Beam Search](Imgs/beam-1.gif)
-  - Genetic Algorithm:
-    ![Genetic Algorithm](Imgs/Gen-1.gif)
-- **CSP**:
-  - Backtracking:
-    ![Backtracking](Imgs/backtrack-1.gif)
-  - Forward Checking:
-    ![Forward Checking](Imgs/forward-1.gif)
 
 ## Lưu Ý
 
