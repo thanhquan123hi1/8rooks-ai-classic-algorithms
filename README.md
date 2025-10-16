@@ -100,7 +100,7 @@ pip install pygame numpy
 - **CSP**:
   - **Backtracking**: Thử tất cả vị trí, quay lui khi thất bại.
   - **Forward Checking**: Giảm miền giá trị sau mỗi bước gán.
-  - **AC3**: _Đang cải tiến_
+  - **AC3**: Kiểm tra các cặp biến để thu hẹp miền giá trị.
 
 ## Minh Họa Thuật Toán (GIF)
 
@@ -140,7 +140,8 @@ pip install pygame numpy
     ![Backtracking](Imgs/backtrack-1.gif)
   - Forward Checking:
     ![Forward Checking](Imgs/forward-1.gif)
-  - AC3: _Đang cải tiến_
+  - AC3:
+    ![AC3](Imgs/AC3-1.gif)
 
 ## Lưu Ý
 
