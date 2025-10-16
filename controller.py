@@ -5,7 +5,7 @@ from localsearch import *
 from nondeterministic import *
 import Demo_NoOBS as NOBS
 import Demo_PartialOBS as POBS
-from CSP import run_algorithm as run_CSP  # ✅ alias để tránh đệ quy
+from CSP import run_algorithm as run_CSP  
 
 
 def run_algorithm(name, root, goal):
@@ -94,9 +94,15 @@ def compute_result(steps, goal, current_algo):
         while True:
             last_state, last_path = next(steps)
             total_states += 1
-            if isinstance(last_state, np.ndarray) and np.array_equal(last_state, goal):
-                found = True
-                break
+            if isinstance(last_state, np.ndarray):
+                if current_algo == "AC-3":
+                    rows, cols = np.where(last_state == 1)
+                    if len(rows) == 8 and len(set(rows)) == 8 and len(set(cols)) == 8:
+                        found = True
+                else:
+                    if np.array_equal(last_state, goal):
+                        found = True
+
     except StopIteration:
         pass
 

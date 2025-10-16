@@ -102,6 +102,7 @@ def consistent_ac3(vi, vj):
 def ac3(domains):
     global count_ac3
     queue = deque([(xi, xj) for xi in range(N) for xj in range(N) if xi != xj])
+    queue = deque(random.sample(list(queue), len(queue)))
 
     board = np.zeros((N, N), dtype=int)
     yield board, []
@@ -109,9 +110,9 @@ def ac3(domains):
     while queue:
         xi, xj = queue.popleft()
         count_ac3 += 1
-
         removed = False
         new_domain_xi = []
+
         for vi in domains[xi]:
             if any(consistent_ac3(vi, vj) for vj in domains[xj]):
                 new_domain_xi.append(vi)
@@ -130,26 +131,44 @@ def ac3(domains):
                 if xk != xi and xk != xj:
                     queue.append((xk, xi))
 
+        # -------------------------------
+        # CHỈNH CHỖ RANDOM Ở ĐÂY 👇
+        # -------------------------------
         board = np.zeros((N, N), dtype=int)
+        temp_assignment = []
+
         for r, vals in domains.items():
             if len(vals) == 1:
                 _, c = vals[0]
                 board[r, c] = 1
+                temp_assignment.append((r, c))
+            elif len(vals) > 1:
+                vi = random.choice(vals)
+                _, c = vi
+                board[r, c] = 1
+        # -------------------------------
 
-        flat_values = list(sum(domains.values(), []))
-        yield board, flat_values
+        yield board, temp_assignment
 
-    sol = solve_from_domains(domains)
-
-    if sol is None:
+    # Sau khi hết queue
+    sol = solve_from_domains({k: v[:] for k, v in domains.items()})
+    if sol is None or len(sol) < N:
         board = np.zeros((N, N), dtype=int)
         yield board, []
         return
 
-    board = np.zeros((N, N), dtype=int)
-    for (r, c) in sol:
-        board[r, c] = 1
-    yield board, sol[:]
+    rows = [r for (r, c) in sol]
+    cols = [c for (r, c) in sol]
+    if len(set(rows)) == N and len(set(cols)) == N:
+        board = np.zeros((N, N), dtype=int)
+        for (r, c) in sol:
+            board[r, c] = 1
+        yield board, sol[:]
+    else:
+        board = np.zeros((N, N), dtype=int)
+        yield board, []
+
+
 
 def run_algorithm(algorithm="bt", visualize=False):
     global count_bt, count_fc, count_ac3

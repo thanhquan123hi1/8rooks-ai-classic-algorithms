@@ -155,7 +155,6 @@ def draw_info_panel(screen, font, x, y, w, h, info, mouse_pos, mouse_click):
 
 
 def draw_detail_board(screen, font, detail_texts):
-    """Vẽ bảng chi tiết (overlay có nút EXIT và định dạng gọn hơn)."""
     overlay = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
     overlay.fill((0, 0, 0, 180))
     screen.blit(overlay, (0, 0))
@@ -172,14 +171,12 @@ def draw_detail_board(screen, font, detail_texts):
     title = font.render("CHI TIẾT THUẬT TOÁN", True, (0, 0, 80))
     screen.blit(title, (box_x + box_w // 2 - title.get_width() // 2, box_y + 15))
 
-    # Nút EXIT (góc trên bên phải)
     btn_exit = pygame.Rect(box_x + box_w - 90, box_y + 15, 70, 35)
     draw_Btn(screen, btn_exit, "EXIT", font, pygame.mouse.get_pos(), pygame.mouse.get_pressed())
     
     # Nội dung chi tiết
     y_offset = box_y + 65
     for line in detail_texts:
-        # --- nếu là ma trận 8x8 → rút gọn dạng danh sách tọa độ có quân ---
         if line.startswith("Step") and "[[" in line:
             try:
                 # Lấy ma trận từ chuỗi
